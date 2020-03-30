@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    agent
+}
+
+dependencies {
+    implementation(fileTree('java8-lib'))
+
+    agent project(":agent")
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.1'
+}
+
+task runApp(type: JavaExec, dependsOn: ['jar', ':agent:jar']) {
+    main('com.example.App')
+    classpath(configurations.runtimeClasspath.asFileTree, sourceSets.main.output)
+
+}
+
+gradle.projectsEvaluated {
+    rootProject.tasks.getByName('runApp')
+            .jvmArgs("-javaagent:${project('agent').tasks.getByName('jar').outputs.files.singleFile}")
+}

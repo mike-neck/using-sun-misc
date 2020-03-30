@@ -1,0 +1,5 @@
+rootProject.name = 'using-sun-misc'
+
+include 'java8'
+include 'java11'
+include 'agent'

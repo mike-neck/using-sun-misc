@@ -1,0 +1,32 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.1'
+}
+
+jar {
+    manifest {
+        attributes 'Premain-Class': 'com.example.agent.Fixer',
+                'Can-Redefine-Classes': true,
+                'Can-Retransform-Classes': true
+    }
+}
+
+task copyJava11Version(type: Copy, dependsOn: ':java11:compileJava') {
+    from project(':java11').file("build/classes/java/main/com/example/java8/StringOp.class")
+    into file('src/main/resources')
+}
+
+compileJava.dependsOn(copyJava11Version)
